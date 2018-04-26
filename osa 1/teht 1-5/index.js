@@ -46,7 +46,7 @@ const Osa = ({osa}) => (
 
 const Yhteensa = ({osat}) => (
         <div>
-            <p>yhteensä {osat.map(osa => osa.tehtavia).reduce((x,y) => x + y)} tehtävää</p>
+            yhteensä {osat.reduce((sum, osa) => sum + osa.tehtavia, 0)} tehtävää
         </div>
 )
 

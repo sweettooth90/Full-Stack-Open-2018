@@ -1,86 +1,80 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React from 'react'
+import ReactDOM from 'react-dom'
 
 class App extends React.Component {
     constructor() {
         super()
         this.state = {
-            hyva: 0,
-            neutraali: 0,
-            huono: 0
+            good: 0,
+            neutral: 0,
+            bad: 0
         }
     }
 
-    handleAction = (arvio) => () => {
-        if (arvio === 'hyva'){
-            this.setState({hyva: this.state.hyva + 1})
-        } else if (arvio === 'neutraali'){
-            this.setState({neutraali: this.state.neutraali + 1})
-        } else if (arvio === 'huono'){
-            this.setState({huono: this.state.huono + 1})
+    handleAction = (value) => () => {
+        if (value === 'good') {
+            this.setState({ good: this.state.good + 1 })
+        } else if (value === 'neutral') {
+            this.setState({ neutral: this.state.neutral + 1 })
+        } else if (value === 'bad') {
+            this.setState({ bad: this.state.bad + 1 })
+        } else if (value === 'reset') {
+            this.setState({ good: 0, neutral: 0, bad: 0 })
         }
+    }
 
-}
     render() {
-        return(
+        return (
             <div>
-            <div>
-                <h1>anna palautetta</h1>
-            </div>
-
-            <div>
-                <Button handleClick={this.handleAction('hyva')} teksti='hyvä' />
-                <Button handleClick={this.handleAction('neutraali')} teksti='neutraali' />
-                <Button handleClick={this.handleAction('huono')} teksti='huono' />
-            </div>
-
-            <div>
-                <h1>statistiikka</h1>
-                <Statistics hyva={this.state.hyva}
-                neutraali={this.state.neutraali}
-                huono={this.state.huono} />
-            </div>
+                <Title title="Give feedback" />
+                <Button handleClick={this.handleAction('good')} text="Good" />&nbsp;
+                <Button handleClick={this.handleAction('neutral')} text="Neutral" />&nbsp;
+                <Button handleClick={this.handleAction('bad')} text="Bad" />&nbsp;
+                <Button handleClick={this.handleAction('reset')} text="Reset" />&nbsp;
+                <Title title="statistics" />
+                <Statistics good={this.state.good} neutral={this.state.neutral} bad={this.state.bad} />
             </div>
         )
     }
 }
 
-const Button = ({teksti, handleClick}) => {
+const Button = ({ handleClick, text }) => (
+    <button onClick={handleClick}>
+        {text}
+    </button>
+)
+
+const Title = ({ title }) => (
+    <h2>{title}</h2>
+)
+
+const Statistics = ({ good, neutral, bad }) => {
+    const amount = good + neutral + bad
+    const average = ((good - bad) / amount).toFixed(1)
+    const positive = (100 * (good / amount)).toFixed(1) + "%"
+    if (good === 0 && neutral === 0 && bad === 0) {
+        return (
+            <div>no given feedback</div>
+        )
+    }
     return (
-        <button onClick={handleClick}>
-        {teksti}
-        </button>
+        <table>
+            <tbody>
+                <Statistic name={"Good"} value={good} />
+                <Statistic name={"Neutral"} value={neutral} />
+                <Statistic name={"Bad"} value={bad} />
+                <Statistic name={"Average"} value={average} />
+                <Statistic name={"Positive"} value={positive} />
+            </tbody>
+        </table>
     )
 }
 
-const Statistics = ({hyva, neutraali, huono}) => {
-        const lkm = hyva+neutraali+huono
-        const keskiarvo = (hyva-huono)/lkm
-        const positiivisia = hyva/lkm
-        if (hyva === 0 && neutraali === 0 && huono === 0){
-            return (
-                <p>ei yhtään palautetta annettu</p>
-            )
-        }
-        return (
-
-        <table>
-            <tbody>
-                <Statistic nimi={"hyvä"} arvo={hyva} />
-                <Statistic nimi={"neutraali"} arvo={neutraali} />
-                <Statistic nimi={"huono"} arvo={huono} />
-                <Statistic nimi={"keskiarvo"} arvo={keskiarvo.toFixed(1)} />
-                <Statistic nimi={"positiivisia"} arvo={(100 * positiivisia).toFixed(1) + " %"} />
-            </tbody>
-        </table>
-        )
-}
-
-const Statistic = ({nimi, arvo}) => (
-        <tr>
-            <td>{nimi}&nbsp;</td>
-            <td>{arvo}</td>
-        </tr>
+const Statistic = ({ name, value }) => (
+    <tr>
+        <td>{name}&nbsp;</td>
+        <td>{value}</td>
+    </tr>
 )
 
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(<App />, document.getElementById('root'))

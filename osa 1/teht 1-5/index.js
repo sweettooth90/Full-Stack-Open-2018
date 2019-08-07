@@ -1,56 +1,56 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
+
 const App = () => {
-    const kurssi = {
-    nimi: 'Half Stack -sovelluskehitys',
-    osat: [
-        {
-        nimi: 'Reactin perusteet',
-        tehtavia: 10
-        },
-        {
-        nimi: 'Tiedonvälitys propseilla',
-        tehtavia: 7
-        },
-        {
-        nimi: 'Komponenttien tila',
-        tehtavia: 14
-        }
+  const course = {
+    name: 'Half Stack -sovelluskehitys',
+    parts: [
+      {
+        name: 'Reactin perusteet',
+        exercises: 10
+      },
+      {
+        name: 'Tiedonvälitys propseilla',
+        exercises: 7
+      },
+      {
+        name: 'Komponenttien tila',
+        exercises: 14
+      }
     ]
-}
+  }
+
   return (
     <div>
-      <Otsikko kurssi = {kurssi.nimi} />
-      <Sisalto osat = {kurssi.osat} />
-      <Yhteensa osat = {kurssi.osat}/>
+      <Header course={course.name} />
+      <Content parts={course.parts} />
     </div>
   )
 }
 
-const Otsikko = ({kurssi}) => (
-        <div>
-            <h1>{kurssi}</h1>
-        </div>
-)
+const Header = ({ course }) => {
+  return (
+    <h1>{course}</h1>
+  )
+}
 
-const Sisalto = ({osat}) => (
-    osat.map(osa => (<Osa osa={osa} />))
-)
+const Content = ({ parts }) => {
+  return (
+    parts.map(part => <Part part={part} />)
+  )
+}
 
-const Osa = ({osa}) => (
-        <div>
-            <p>{osa.nimi} {osa.tehtavia}</p>
-        </div>
-)
+const Part = ({ part }) => {
+  return (
+    <div>{part.name} {part.exercises}</div>
+  )
+}
 
-const Yhteensa = ({osat}) => (
-        <div>
-            yhteensä {osat.reduce((sum, osa) => sum + osa.tehtavia, 0)} tehtävää
-        </div>
-)
+const Total = (props) => {
+  return (
+    <div>yhteensä {props.exercises} tehtävää</div>
+  )
+}
 
-ReactDOM.render(
-  <App />,
-  document.getElementById('root')
-)
+ReactDOM.render(<App />, document.getElementById('root'))

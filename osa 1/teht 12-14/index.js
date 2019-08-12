@@ -1,62 +1,53 @@
-import React from 'react'
+import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 
-class App extends React.Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            selected: 0,
-            votes: 0
-        }
-    }
+const App = (props) => {
+  const [selected, setSelected] = useState(0)
+  const [points, setPoints] = useState(new Array(anecdotes.length).fill(0))
+  const copy = [...points]
+  const mostVotes = Math.max(...points)
 
-    random = () => this.setState({ selected: Math.floor(Math.random() * anecdotes.length) })
-
-    vote = () => this.setState({ votes: anecdotes[this.state.selected].votes = anecdotes[this.state.selected].votes + 1 })
-
-    render() {
-        const mapVotes = anecdotes.map(anecdotes => anecdotes.votes)
-        const mostVotes = mapVotes.indexOf(Math.max(...mapVotes))
-        return (
-            <div>
-                <ShowAnecdote anecdote={anecdotes[this.state.selected].anecdote} />
-                <Votes voteAmount={anecdotes[this.state.selected].votes} />
-                <p>
-                    <Button handleClick={this.vote} text="vote" />
-                    <Button handleClick={this.random} text="next anecdote" />
-                </p>
-                <Title />
-                <p>{anecdotes[mostVotes].anecdote}</p>
-                <p>{anecdotes[mostVotes].votes} votes</p>
-            </div>
-        )
-    }
+  return (
+    <div>
+      <Title title='Anecdote of the day' />
+      <b>{props.anecdotes[selected]}</b>
+      <Votes amount={points[selected]} />
+      <p>
+        <Button handleClick={() => { copy[selected]++ , setPoints(copy) }} text='vote' />
+        <Button handleClick={() => setSelected(Math.floor(Math.random() * anecdotes.length))} text='next anecdote' />
+      </p>
+      <Title title='Anecdote with most votes' />
+      <p><b>{props.anecdotes[points.indexOf(mostVotes)]}</b></p>
+      <Votes amount={mostVotes} />
+    </div>
+  )
 }
 
-const Button = ({ handleClick, text }) => (
+const Button = ({ handleClick, text }) => {
+  return (
     <button onClick={handleClick}>{text}</button>
+  )
+}
+
+const Votes = ({ amount }) => (
+  <div>has {amount} votes</div>
 )
+
 
 const Title = ({ title }) => (
-    <h3>anecdote with most votes:</h3>
-)
-
-const Votes = ({ voteAmount }) => (
-    <div>This anecdote has {voteAmount} votes</div>
-)
-
-const ShowAnecdote = ({ anecdote }) => (
-    <div>{anecdote}</div>
+  <h1>{title}</h1>
 )
 
 const anecdotes = [
-    { anecdote: 'If it hurts, do it more often', votes: 0 },
-    { anecdote: 'Adding manpower to a late software project makes it later!', votes: 0 },
-    { anecdote: 'The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.', votes: 0 },
-    { anecdote: 'Any fool can write code that a computer can understand. Good programmers write code that humans can understand.', votes: 0 },
-    { anecdote: 'Premature optimization is the root of all evil.', votes: 0 },
-    { anecdote: 'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.', votes: 0 }
+  'If it hurts, do it more often',
+  'Adding manpower to a late software project makes it later!',
+  'The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.',
+  'Any fool can write code that a computer can understand. Good programmers write code that humans can understand.',
+  'Premature optimization is the root of all evil.',
+  'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.'
 ]
 
-
-ReactDOM.render(<App anecdotes={anecdotes} />, document.getElementById('root'))
+ReactDOM.render(
+  <App anecdotes={anecdotes} />,
+  document.getElementById('root')
+)

@@ -10,14 +10,14 @@ const App = (props) => {
   return (
     <div>
       <Title title='Anecdote of the day' />
-      <b>{props.anecdotes[selected]}</b>
+      <b>{anecdotes[selected]}</b>
       <Votes amount={points[selected]} />
       <p>
-        <Button handleClick={() => { copy[selected]++ , setPoints(copy) }} text='vote' />
+        <Button handleClick={() => { copy[selected]++; setPoints(copy) }} text='vote' />
         <Button handleClick={() => setSelected(Math.floor(Math.random() * anecdotes.length))} text='next anecdote' />
       </p>
       <Title title='Anecdote with most votes' />
-      <p><b>{props.anecdotes[points.indexOf(mostVotes)]}</b></p>
+      <p><b>{anecdotes[points.indexOf(mostVotes)]}</b></p>
       <Votes amount={mostVotes} />
     </div>
   )

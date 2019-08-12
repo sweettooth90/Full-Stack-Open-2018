@@ -10,24 +10,27 @@ const App = (props) => {
   return (
     <div>
       <Title title='Anecdote of the day' />
-      <b>{anecdotes[selected]}</b>
+      <Anecdote anecdote={anecdotes[selected]} />
       <Votes amount={points[selected]} />
       <p>
         <Button handleClick={() => { copy[selected]++; setPoints(copy) }} text='vote' />
         <Button handleClick={() => setSelected(Math.floor(Math.random() * anecdotes.length))} text='next anecdote' />
       </p>
       <Title title='Anecdote with most votes' />
-      <p><b>{anecdotes[points.indexOf(mostVotes)]}</b></p>
+      <Anecdote anecdote={anecdotes[points.indexOf(mostVotes)]} />
       <Votes amount={mostVotes} />
     </div>
   )
 }
 
-const Button = ({ handleClick, text }) => {
-  return (
-    <button onClick={handleClick}>{text}</button>
-  )
-}
+const Button = ({ handleClick, text }) => (
+  <button onClick={handleClick}>{text}</button>
+)
+
+const Anecdote = ({ anecdote }) => (
+  <div><b>{anecdote}</b></div>
+)
+
 
 const Votes = ({ amount }) => (
   <div>has {amount} votes</div>

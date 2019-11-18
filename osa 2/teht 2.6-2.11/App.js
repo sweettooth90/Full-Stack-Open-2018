@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Persons from './components/Persons'
 import Filter from './components/Filter'
 import Form from './components/Form'
+import axios from 'axios'
 
 const App = () => {
     const [persons, setPersons] = useState([
@@ -10,6 +11,14 @@ const App = () => {
     const [newName, setNewName] = useState('')
     const [newNumber, setNewNumber] = useState('')
     const [filter, setFilter] = useState('')
+
+    useEffect(() => {
+        axios
+            .get('http://localhost:3001/persons')
+            .then(response => {
+                setPersons(response.data)
+            })
+    }, [])
 
     const handleFilter = (event) => (
         setFilter(event.target.value)
@@ -56,7 +65,6 @@ const App = () => {
             <Persons persons={persons} filter={filter} />
         </div>
     )
-
 }
 
 export default App

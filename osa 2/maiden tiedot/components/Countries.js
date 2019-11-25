@@ -31,7 +31,7 @@ const Countries = ({ filter, countries }) => {
     }
     else if (countriesToShow.length > 10) {
         return (
-            <p>Too many matches, specify another filter</p>
+            <p>too many matches, specify another filter</p>
         )
     }
     else {

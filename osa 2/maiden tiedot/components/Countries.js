@@ -37,7 +37,9 @@ const Countries = ({ filter, countries }) => {
     else {
         if (!show) {
             return (
-                listCountries()
+                <div>
+                    {listCountries()}
+                </div>
             )
         }
         else {

@@ -39,8 +39,8 @@ const App = () => {
         if (persons.map(person => person.name.toLowerCase()).indexOf(newName.toLowerCase()) !== -1) {
 
             if (window.confirm(
-                `${newName} is already added to phonebook, replace the old number with a new one?`)
-            ) {
+                `${newName} is already added to phonebook, replace the old number with a new one?`)) {
+
                 const editPerson = persons.find(person => person.name.toLowerCase() === newName.toLowerCase())
 
                 const updatedPerson = { ...editPerson, number: newNumber }

@@ -4,6 +4,8 @@ import Form from './components/Form'
 import personService from './services/PersonService'
 import Success from './components/Success'
 import Error from './components/Error'
+import Persons from './components/Persons'
+
 
 const App = () => {
     const [persons, setPersons] = useState([])
@@ -113,13 +115,6 @@ const App = () => {
         }
     }
 
-    const ListPersons = () => persons.filter(
-        person => person.name.toLowerCase().includes(filter.toLowerCase())).map(person => {
-            return <div key={person.id}>{person.name} {person.number}
-                <button onClick={() => removePerson(person)}>delete</button>
-            </div>
-        })
-
     return (
         <div>
             <Success notification={success} />
@@ -135,7 +130,7 @@ const App = () => {
                 handleNumberChange={handleNumberChange}
             />
             <h2>Numbers</h2>
-            <ListPersons persons={ListPersons()} />
+            <Persons persons={persons} filter={filter} removePerson={removePerson} />
         </div>
     )
 

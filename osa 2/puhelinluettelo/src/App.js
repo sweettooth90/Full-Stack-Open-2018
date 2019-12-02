@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from 'react'
-import Persons from './components/Persons'
 import Filter from './components/Filter'
 import Form from './components/Form'
 import personService from './services/PersonService'
+import Success from './components/Success'
+import Error from './components/Error'
 
 const App = () => {
     const [persons, setPersons] = useState([])
     const [newName, setNewName] = useState('')
     const [newNumber, setNewNumber] = useState('')
     const [filter, setFilter] = useState('')
+    const [success, setSuccess] = useState(null)
+    const [error, setError] = useState(null)
 
     useEffect(() => {
         personService
@@ -16,7 +19,7 @@ const App = () => {
             .then(initialPersons => setPersons(initialPersons))
     }, [])
 
-    const handleFilter = (event) => (
+    const handleFilterChange = (event) => (
         setFilter(event.target.value)
     )
 
@@ -30,66 +33,99 @@ const App = () => {
 
     const addName = (event) => {
         event.preventDefault()
-
         const personObject = {
             name: newName,
             number: newNumber
         }
-
-        if (persons.map(person => person.name.toLowerCase()).indexOf(newName.toLowerCase()) !== -1) {
-
-            if (window.confirm(
-                `${newName} is already added to phonebook, replace the old number with a new one?`)) {
-
-                const editPerson = persons.find(person => person.name.toLowerCase() === newName.toLowerCase())
-
-                const updatedPerson = { ...editPerson, number: newNumber }
-
-                personService
-                    .update(updatedPerson.id, updatedPerson)
-                    .then(newPerson => {
-                        setPersons(persons.map(person => person.id !== editPerson.id ? person : newPerson))
+        setSuccess(`${personObject.name} was added.`)
+        setTimeout(() => { setSuccess(null) }, 3500)
+        personService
+            .create(personObject)
+            .then(newPerson => {
+                persons.forEach(person => {
+                    if (person.name === newName) {
+                        personService.getAll(personObject)
+                            .then(update => {
+                                if (window.confirm(`${person.name} is already added to phonebook, replace the old number with a new one?`)) {
+                                    return (
+                                        personService
+                                            .update(person.id, personObject)
+                                            .then(update => {
+                                                personService
+                                                    .remove(person.id)
+                                                    .then(update => {
+                                                        setPersons(persons.splice(update))
+                                                        personService.getAll().then(fetch => {
+                                                            setPersons(fetch)
+                                                            setSuccess(`${person.name} has been updated.`)
+                                                            setTimeout(() => { setSuccess(null) }, 3500)
+                                                        })
+                                                    })
+                                            })
+                                            .catch(error => {
+                                                personService
+                                                    .getAll()
+                                                    .then(fetch => {
+                                                        setError(`${person.name} was already removed.`)
+                                                        setTimeout(() => { setError(null) }, 3500)
+                                                    })
+                                            })
+                                    )
+                                } else {
+                                    personService
+                                        .remove(person.id)
+                                        .then(remove => {
+                                            setPersons(persons.splice(remove))
+                                            personService
+                                                .getAll()
+                                                .then(fetch => { setPersons(fetch) })
+                                        })
+                                        .catch(error => {
+                                            setError(`${person.name} was already removed.`)
+                                            setTimeout(() => { setError(null) }, 3500)
+                                        })
+                                }
+                            })
+                    } else {
+                        setPersons(persons.concat(newPerson))
                         setNewName('')
                         setNewNumber('')
-                        alert(`Updated ${newName}`)
-                    })
-                    .catch(error => {
-                        setPersons(persons.filter(persons => persons.id !== editPerson.id))
-                        alert(`${newName} has been removed.`)
-                    })
-            }
-        } else {
-            personService
-                .create(personObject)
-                .then(newPerson => {
-                    setPersons(persons.concat(newPerson))
-                    setNewName('')
-                    setNewNumber('')
-                    alert(`Added ${newName}`)
+                    }
                 })
+            })
+    }
 
+    const removePerson = (person) => {
+        if (window.confirm(`Delete ${person.name}`)) {
+            return (
+                personService
+                    .remove(person.id)
+                    .then(remove => {
+                        personService
+                            .getAll()
+                            .then(update => {
+                                setPersons(update)
+                                setSuccess(`${person.name} was removed from phonebook`)
+                                setTimeout(() => { setSuccess(null) }, 3500)
+                            })
+                    })
+            )
         }
     }
 
-    const removeName = id => {
-        const removePerson = persons.find(person => person.id === id)
-        if (window.confirm(`Do you want to delete ${removePerson.name}?`)) {
-            personService
-                .remove(id)
-                .then(() => {
-                    setPersons(persons.filter(person => person.id !== id))
-                })
-                .catch(error => {
-                    setPersons(persons.filter(person => person.id !== id))
-                    alert(`${removePerson.name} has already been removed.`)
-                })
-        }
-    }
+    const ListPersons = () => persons.filter(
+        person => person.name.toLowerCase().includes(filter.toLowerCase())).map(person => {
+            return <div key={person.id}>{person.name} {person.number}
+                <button onClick={() => removePerson(person)}>delete</button>
+            </div>
+        })
 
     return (
         <div>
+            <Success notification={success} />
+            <Error incorrect={error} />
             <h2>Phonebook</h2>
-            <Filter filter={filter} handleFilter={handleFilter} />
+            <Filter filter={filter} handleFilter={handleFilterChange} />
             <h2>add a new</h2>
             <Form
                 addName={addName}
@@ -99,7 +135,7 @@ const App = () => {
                 handleNumberChange={handleNumberChange}
             />
             <h2>Numbers</h2>
-            <Persons persons={persons} filter={filter} handleClick={removeName} />
+            <ListPersons persons={ListPersons()} />
         </div>
     )
 

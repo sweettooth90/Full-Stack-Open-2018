@@ -4,7 +4,7 @@ import Form from './components/Form'
 import personService from './services/PersonService'
 import Success from './components/Success'
 import Error from './components/Error'
-import Persons from './components/Persons'
+import ListPersons from './components/ListPersons'
 
 
 const App = () => {
@@ -130,7 +130,7 @@ const App = () => {
                 handleNumberChange={handleNumberChange}
             />
             <h2>Numbers</h2>
-            <Persons persons={persons} filter={filter} removePerson={removePerson} />
+            <ListPersons persons={persons} filter={filter} removePerson={removePerson} />
         </div>
     )
 

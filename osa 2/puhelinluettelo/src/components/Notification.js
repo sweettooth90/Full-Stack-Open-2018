@@ -2,7 +2,7 @@ import React from 'react'
 
 const Notification = ({ notification, error }) => {
 
-  background = 'green'
+  let background = 'green'
 
   if (error) {
     background = 'red'
@@ -10,7 +10,7 @@ const Notification = ({ notification, error }) => {
 
   const notificationStyle = {
     color: white,
-    background: 'lightgrey',
+    background: background,
     fontSize: 20,
     padding: 5,
   }

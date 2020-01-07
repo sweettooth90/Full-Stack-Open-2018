@@ -9,7 +9,7 @@ const Notification = ({ notification, error }) => {
   }
 
   const notificationStyle = {
-    color: white,
+    color: 'white',
     background: background,
     fontSize: 20,
     padding: 5,

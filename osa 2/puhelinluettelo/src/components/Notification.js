@@ -2,15 +2,14 @@ import React from 'react'
 
 const Notification = ({ notification, error }) => {
 
-  let color = 'green'
+  background = 'green'
 
   if (error) {
-    color = 'white',
     background = 'red'
   }
 
   const notificationStyle = {
-    color: color,
+    color: white,
     background: 'lightgrey',
     fontSize: 20,
     padding: 5,

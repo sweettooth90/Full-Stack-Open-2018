@@ -36,7 +36,7 @@ const App = () => {
 
   const showNotification = (notification, isError) => {
     setError(isError)
-    setMessage(notification)
+    setNotification(notification)
     setTimeout(() => {
         setNotification(null)
         setError(false)

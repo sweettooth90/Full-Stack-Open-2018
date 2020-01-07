@@ -1,8 +1,8 @@
 import React from 'react'
 
-const Filter = ({ filter, handleFilter }) => (
+const Filter = ({ search, handleSearch }) => (
     <div>
-        filter shown with <input value={filter} onChange={handleFilter} />
+        filter shown with <input value={search} onChange={handleSearch} />
     </div>
 )
 
